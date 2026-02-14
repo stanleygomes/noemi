@@ -1,0 +1,38 @@
+<idea-plugin>
+    <id>com.stanleygomes.noemi</id>
+    <name>Noemi Theme</name>
+    <version>1.0.0</version>
+    <vendor email="stanley.gomes@gmail.com" url="https://github.com/stanleygomes/noemi">Stanley Gomes</vendor>
+
+    <description><![CDATA[
+        <h2>Noemi Theme</h2>
+        <p>A beautiful and modern theme for JetBrains IDEs.</p>
+        <p>Features:</p>
+        <ul>
+            <li>Support for standard themes</li>
+            <li>Support for Islands UI themes (modern UI)</li>
+            <li>Carefully crafted color palette</li>
+        </ul>
+    ]]></description>
+
+    <change-notes><![CDATA[
+        <h3>1.0.0</h3>
+        <ul>
+            <li>Initial release</li>
+            <li>Standard theme support</li>
+            <li>Islands UI theme support</li>
+        </ul>
+    ]]></change-notes>
+
+    <!-- Plugin compatibility -->
+    <idea-version since-build="223" until-build="242.*"/>
+
+    <!-- Theme declarations -->
+    <extensions defaultExtensionPoint="com.intellij">
+        <!-- Standard theme (classic) -->
+        <themeProvider id="com.stanleygomes.noemi.dark" path="/themes/noemi_dark.theme.json"/>
+        
+        <!-- Islands theme (modern UI) -->
+        <themeProvider id="com.stanleygomes.noemi.light" path="/themes/noemi_light.theme.json"/>
+    </extensions>
+</idea-plugin>
