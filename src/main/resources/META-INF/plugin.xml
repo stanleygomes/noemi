@@ -12,6 +12,7 @@
             <li>Support for standard themes</li>
             <li>Support for Islands UI themes (modern UI)</li>
             <li>Carefully crafted color palette</li>
+            <li>Built-in notes tool window</li>
         </ul>
     ]]></description>
 
@@ -27,12 +28,23 @@
     <!-- Plugin compatibility -->
     <idea-version since-build="223" until-build="242.*"/>
 
-    <!-- Theme declarations -->
-    <extensions defaultExtensionPoint="com.intellij">
+    <extensions defaultExtensionNs="com.intellij">
         <!-- Standard theme (classic) -->
         <themeProvider id="com.stanleygomes.noemi.dark" path="/themes/noemi_dark.theme.json"/>
-        
+
         <!-- Islands theme (modern UI) -->
         <themeProvider id="com.stanleygomes.noemi.light" path="/themes/noemi_light.theme.json"/>
+
+        <!-- Notes tool window -->
+        <toolWindow id="Noemi Notes"
+                    anchor="right"
+                    factoryClass="com.stanleygomes.noemi.note.NoteToolWindowFactory"/>
     </extensions>
+
+    <actions>
+        <action id="com.stanleygomes.noemi.CreateNote"
+                class="com.stanleygomes.noemi.note.CreateNoteAction"
+                text="Create Note"
+                description="Create a new note"/>
+    </actions>
 </idea-plugin>
