@@ -1,61 +1,95 @@
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.markdownToHTML
+
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.17.4"
-    id("org.jetbrains.changelog") version "2.5.0"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.intellijPlatform)
+    alias(libs.plugins.changelog)
 }
 
-group = project.property("pluginGroup") as String
-version = project.property("pluginVersion") as String
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion").get()
+
+kotlin {
+    jvmToolchain(17)
+}
 
 repositories {
     mavenCentral()
-}
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+    intellijPlatform {
+        defaultRepositories()
     }
 }
 
-intellij {
-    version.set(project.property("intellijVersion") as String)
-    type.set("IC")
-    plugins.set(listOf())
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity(providers.gradleProperty("intellijVersion"))
+    }
+}
+
+intellijPlatform {
+    pluginConfiguration {
+        name = providers.gradleProperty("pluginName")
+        version = providers.gradleProperty("pluginVersion")
+
+        description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+            val start = "<!-- Plugin description -->"
+            val end = "<!-- Plugin description end -->"
+
+            with(it.lines()) {
+                if (!containsAll(listOf(start, end))) {
+                    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+                }
+                subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
+            }
+        }
+
+        val changelog = project.changelog
+        changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
+            with(changelog) {
+                renderItem(
+                    (getOrNull(pluginVersion) ?: getUnreleased())
+                        .withHeader(false)
+                        .withEmptySections(false),
+                    Changelog.OutputType.HTML,
+                )
+            }
+        }
+
+        ideaVersion {
+            sinceBuild = providers.gradleProperty("sinceBuild")
+            untilBuild = provider { "" }
+        }
+    }
+
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        channels = providers.gradleProperty("pluginVersion").map {
+            listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
+        }
+    }
 }
 
 changelog {
     groups.empty()
-    repositoryUrl = project.property("pluginRepositoryUrl") as String
+    repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
     versionPrefix = ""
 }
 
 tasks {
     wrapper {
-        gradleVersion = project.property("gradleVersion") as String
-    }
-
-    withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
-    }
-
-    patchPluginXml {
-        sinceBuild.set(project.property("sinceBuild") as String)
-        untilBuild.set("")
-    }
-
-    signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        gradleVersion = providers.gradleProperty("gradleVersion").get()
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
         dependsOn(patchChangelog)
-    }
-
-    buildSearchableOptions {
-        enabled = false
     }
 }
