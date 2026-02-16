@@ -60,7 +60,6 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("sinceBuild")
-            untilBuild = provider { "" }
         }
     }
 
