@@ -1,17 +1,18 @@
 <idea-plugin>
-    <id>com.stanleygomes.noemi</id>
+    <id>com.nazarethlabs.noemi</id>
     <name>Noemi Theme</name>
     <version>1.0.0</version>
-    <vendor email="stanley.gomes@gmail.com" url="https://github.com/stanleygomes/noemi">Stanley Gomes</vendor>
+    <vendor>stanleygomes</vendor>
 
     <description><![CDATA[
         <h2>Noemi Theme</h2>
-        <p>A beautiful and modern theme for JetBrains IDEs.</p>
+        <p>A beautiful and modern dark theme collection for JetBrains IDEs.</p>
         <p>Features:</p>
         <ul>
-            <li>Support for standard themes</li>
-            <li>Support for Islands UI themes (modern UI)</li>
-            <li>Carefully crafted color palette</li>
+            <li>Two stunning dark theme variants: July and November</li>
+            <li>Carefully crafted color palettes for comfortable coding</li>
+            <li>Full support for all JetBrains IDEs</li>
+            <li>Optimized for long coding sessions</li>
         </ul>
     ]]></description>
 
@@ -19,20 +20,22 @@
         <h3>1.0.0</h3>
         <ul>
             <li>Initial release</li>
-            <li>Standard theme support</li>
-            <li>Islands UI theme support</li>
+            <li>Noemi July theme: Deep dark theme with red accents</li>
+            <li>Noemi November theme: Balanced dark theme with vibrant colors</li>
         </ul>
     ]]></change-notes>
 
     <!-- Plugin compatibility -->
-    <idea-version since-build="223" until-build="242.*"/>
+    <idea-version since-build="243"/>
+
+    <depends>com.intellij.modules.platform</depends>
 
     <!-- Theme declarations -->
-    <extensions defaultExtensionPoint="com.intellij">
-        <!-- Standard theme (classic) -->
-        <themeProvider id="com.stanleygomes.noemi.dark" path="/themes/noemi_dark.theme.json"/>
-        
-        <!-- Islands theme (modern UI) -->
-        <themeProvider id="com.stanleygomes.noemi.light" path="/themes/noemi_light.theme.json"/>
+    <extensions defaultExtensionNs="com.intellij">
+      <themeProvider id="com.nazarethlabs.noemi.july" path="/themes/Noemi_July.theme.json" />
+      <themeProvider id="com.nazarethlabs.noemi.november" path="/themes/Noemi_November.theme.json" />
+
+      <bundledColorScheme path="/themes/Noemi_July.xml"/>
+      <bundledColorScheme path="/themes/Noemi_November.xml"/>
     </extensions>
 </idea-plugin>
