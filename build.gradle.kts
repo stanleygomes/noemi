@@ -76,6 +76,12 @@ intellijPlatform {
             listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
         }
     }
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 changelog {
