@@ -1,13 +1,25 @@
 # Noemi Theme
 
-A beautiful and modern theme for JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, etc.).
+<!-- Plugin description -->
+A beautiful and modern dark theme collection for JetBrains IDEs.
+
+**Noemi July**: A deep dark theme with red accents, perfect for focused coding sessions.
+
+**Noemi November**: A balanced dark theme with vibrant colors, optimized for comfortable long coding sessions.
+
+**Key Features:**
+- Two carefully crafted dark theme variants
+- Optimized color palettes for reduced eye strain
+- Full support for all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, etc.)
+- Professional and modern design
+<!-- Plugin description end -->
 
 ## Features
 
-- **Dark Theme**: Carefully crafted dark color palette for comfortable coding
-- **Light Theme**: Beautiful light theme for daytime coding
-- **Islands UI Support**: Full support for the modern JetBrains UI (Islands)
-- **Standard Theme Support**: Compatible with classic IDE themes
+- **Noemi July Theme**: Deep dark theme with red accents for focused coding
+- **Noemi November Theme**: Balanced dark theme with vibrant colors
+- **Optimized Color Palettes**: Designed for comfortable long coding sessions
+- **Full IDE Support**: Compatible with all JetBrains IDEs
 
 ## Installation
 
@@ -19,7 +31,7 @@ A beautiful and modern theme for JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStor
 4. Click `Install`
 5. Restart the IDE
 6. Go to `Settings/Preferences` → `Appearance & Behavior` → `Appearance`
-7. Select "Noemi Dark" or "Noemi Light" from the Theme dropdown
+7. Select "Noemi July" or "Noemi November" from the Theme dropdown
 
 ### Manual Installation
 
@@ -30,13 +42,13 @@ A beautiful and modern theme for JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStor
 5. Select the downloaded `.zip` file
 6. Restart the IDE
 7. Go to `Settings/Preferences` → `Appearance & Behavior` → `Appearance`
-8. Select "Noemi Dark" or "Noemi Light" from the Theme dropdown
+8. Select "Noemi July" or "Noemi November" from the Theme dropdown
 
 ## Development
 
 ### Requirements
 
-- Java 17 or higher
+- Java 21 or higher
 - Gradle 8.5 (included via wrapper)
 
 ### Building the Plugin
@@ -133,22 +145,33 @@ To customize the theme colors:
 - **Until Build**: 242.* (IntelliJ IDEA 2024.2)
 - Compatible with all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, etc.)
 
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details
-
-## Author
-
-**Stanley Gomes**
-- Email: stanley.gomes@gmail.com
-- GitHub: [@stanleygomes](https://github.com/stanleygomes)
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Resources
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- [JetBrains Plugin Development Guide](https://plugins.jetbrains.com/docs/intellij/)
-- [Theme Structure Reference](https://plugins.jetbrains.com/docs/intellij/themes.html)
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Links
+
+- [Issue Tracker](https://github.com/stanleygomes/noemi/issues)
+- [Changelog](CHANGELOG.md)
+- [Plugin Configuration File](https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html?from=IJPluginTemplate)
+- [Marktplace](https://plugins.jetbrains.com/author/me)
+- [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/)
+- [Theme Guidelines](https://plugins.jetbrains.com/docs/intellij/themes.html)
 - [UI Guidelines](https://jetbrains.design/intellij/)
+- [Color Scheme Documentation](https://plugins.jetbrains.com/docs/intellij/color-scheme-management.html)
+
+---
+
+Made with 🔥 by NazarethLabs
+
+[gh:build]: https://github.com/stanleygomes/codex-notes/actions?query=workflow%3ABuild
