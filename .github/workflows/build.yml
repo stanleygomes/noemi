@@ -1,0 +1,231 @@
+name: Build
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Validate Conventional Commits
+  validateCommits:
+    name: Validate Commits
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+
+      # Validate Conventional Commits
+      - name: Validate Conventional Commits
+        uses: wagoid/commitlint-github-action@v5
+
+  # Prepare the environment and build the plugin
+  build:
+    name: Build
+    needs: [ validateCommits ]
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.update_version.outputs.version }}
+      previous_version: ${{ steps.update_version.outputs.previous_version }}
+    steps:
+
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          large-packages: false
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+
+      # Update version for release builds
+      - name: Update Version for Release
+        if: github.ref == 'refs/heads/master'
+        id: update_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_VERSION=$(grep 'pluginVersion' gradle.properties | cut -d'=' -f2 | tr -d ' ')
+          LAST_TAG=$(gh api repos/{owner}/{repo}/releases/latest --jq '.tag_name' 2>/dev/null || echo "")
+          COMMITS=$(git log --oneline $LAST_TAG..HEAD 2>/dev/null || echo "")
+
+          INCREMENT="patch"
+          if echo "$COMMITS" | grep -q "BREAKING CHANGE\|!:"; then
+            INCREMENT="major"
+          elif echo "$COMMITS" | grep -q "^feat"; then
+            INCREMENT="minor"
+          fi
+
+          IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+          case $INCREMENT in
+            major)
+              VERSION="$((major + 1)).0.0"
+              ;;
+            minor)
+              VERSION="$major.$((minor + 1)).0"
+              ;;
+            patch)
+              VERSION="$major.$minor.$((patch + 1))"
+              ;;
+          esac
+
+          sed -i "s/pluginVersion.*/pluginVersion = $VERSION/" gradle.properties
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "previous_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+          echo "Updated gradle.properties:"
+          cat gradle.properties
+
+      # Set up the Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 17
+
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      # Build plugin
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+
+      # Prepare plugin archive content for creating artifact
+      - name: Prepare Plugin Artifact
+        id: artifact
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/build/distributions
+          FILENAME=`ls *.zip`
+          unzip "$FILENAME" -d content
+
+          echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
+
+      # Store an already-built plugin as an artifact for downloading
+      - name: Upload artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.artifact.outputs.filename }}
+          path: ./build/distributions/content/*/*
+
+  # Run plugin structure verification along with IntelliJ Plugin Verifier
+  verify:
+    name: Verify plugin
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          large-packages: false
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+
+      # Set up the Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 17
+
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: true
+
+      # Run Verify Plugin task and IntelliJ Plugin Verifier tool
+      - name: Run Plugin Verification tasks
+        run: ./gradlew verifyPlugin
+
+      # Collect Plugin Verifier Result
+      - name: Collect Plugin Verifier Result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pluginVerifier-result
+          path: ${{ github.workspace }}/build/reports/pluginVerifier
+
+  # Prepare a draft release for GitHub Releases page for the manual verification
+  # If accepted and published, the release workflow would be triggered
+  releaseDraft:
+    name: Release draft
+    if: github.event_name != 'pull_request'
+    needs: [ build, verify ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Set up the Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 17
+
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: true
+
+      # Remove old release drafts by using the curl request for the available releases with a draft flag
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/{owner}/{repo}/releases \
+            --jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
+
+      # Create a new release draft which is not publicly visible and requires manual acceptance
+      - name: Create Release Draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ needs.build.outputs.version }}
+          PREVIOUS_TAG=${{ needs.build.outputs.previous_version }}
+
+          RELEASE_NOTE="./build/tmp/release_note.txt"
+          mkdir -p "$(dirname "$RELEASE_NOTE")"
+
+          if [ -n "$PREVIOUS_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
+          else
+            COMMITS=$(git log --oneline --pretty=format:"- %s" HEAD)
+          fi
+
+          echo "## Changes" >> $RELEASE_NOTE
+          echo "$COMMITS" > $RELEASE_NOTE
+          echo "" >> $RELEASE_NOTE
+          echo "## Diff" >> $RELEASE_NOTE
+          echo "" >> $RELEASE_NOTE
+          if [ -n "$PREVIOUS_TAG" ]; then
+            echo "Compare: https://github.com/stanleygomes/codex-notes/compare/$PREVIOUS_TAG...$VERSION" >> $RELEASE_NOTE
+          fi
+
+          gh release create $VERSION \
+            --draft \
+            --title $VERSION \
+            --notes-file $RELEASE_NOTE
