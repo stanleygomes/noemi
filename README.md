@@ -48,8 +48,8 @@ A beautiful and modern dark theme collection for JetBrains IDEs.
 
 ### Requirements
 
-- Java 21 or higher
-- Gradle 8.5 (included via wrapper)
+- Java 17 or higher
+- Gradle 8.13 (included via wrapper)
 
 ### Building the Plugin
 
@@ -96,35 +96,6 @@ noemi/
 
 - `.theme.json` files: Modern UI themes with Islands support (JetBrains 2022.1+)
 - `.xml` files: Classic color schemes for the editor
-
-## Customizing the Theme
-
-To customize the theme colors:
-
-1. Edit the theme files in `src/main/resources/themes/`
-2. For UI colors: Modify the `.theme.json` files
-3. For editor colors: Modify the `.xml` files
-4. Run `./gradlew runIde` to test your changes
-
-### Color Palette Reference
-
-**Dark Theme Colors:**
-- Background: `#1e1e2e`
-- Foreground: `#cdd6f4`
-- Selection: `#313244`
-- Accent (Blue): `#89b4fa`
-- Success (Green): `#a6e3a1`
-- Error (Red): `#f38ba8`
-- Warning (Yellow): `#f9e2af`
-
-**Light Theme Colors:**
-- Background: `#eff1f5`
-- Foreground: `#4c4f69`
-- Selection: `#dce0e8`
-- Accent (Blue): `#1e66f5`
-- Success (Green): `#40a02b`
-- Error (Red): `#d20f39`
-- Warning (Yellow): `#df8e1d`
 
 ## Publishing
 
