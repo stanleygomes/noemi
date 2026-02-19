@@ -1,29 +1,7 @@
 <idea-plugin>
     <id>com.nazarethlabs.noemi</id>
     <name>Noemi Theme</name>
-    <version>1.0.0</version>
     <vendor>stanleygomes</vendor>
-
-    <description><![CDATA[
-        <h2>Noemi Theme</h2>
-        <p>A beautiful and modern dark theme collection for JetBrains IDEs.</p>
-        <p>Features:</p>
-        <ul>
-            <li>Two stunning dark theme variants: July and November</li>
-            <li>Carefully crafted color palettes for comfortable coding</li>
-            <li>Full support for all JetBrains IDEs</li>
-            <li>Optimized for long coding sessions</li>
-        </ul>
-    ]]></description>
-
-    <change-notes><![CDATA[
-        <h3>1.0.0</h3>
-        <ul>
-            <li>Initial release</li>
-            <li>Noemi July theme: Deep dark theme with red accents</li>
-            <li>Noemi November theme: Balanced dark theme with vibrant colors</li>
-        </ul>
-    ]]></change-notes>
 
     <!-- Plugin compatibility -->
     <idea-version since-build="243"/>
