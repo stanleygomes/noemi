@@ -21,8 +21,7 @@
       "errorForeground": "#fc6a67",
       "infoForeground": "#ffd866",
       "lightSelectionBackground": "#2e2e2e",
-      "separatorColor": "#212121",
-      "windowBorder": "#212121"
+      "separatorColor": "#212121"
     },
     "ActionButton": {
       "comment": "Action buttons: colors for buttons in toolbars, menus, and action panels (e.g., run, debug buttons)",
@@ -456,6 +455,9 @@
           "selectionBackground": "#353535"
         }
       }
+    },
+    "Window": {
+      "border": "0,0,0,0,000000"
     }
   },
   "icons": {
