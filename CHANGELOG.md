@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-02-20
+
+- chore: remove window border
+- docs: update readme
+- feat: update theme colors
+- fix: remove july theme
+- feat: new plugin icon
+- chore: pipeline fixes
+- docs: fix pipeline
+- chore: release updates - 1.1.0
+
 ## [1.1.0] - 2026-02-16
 
 - chore: update pluginIcon.svg
@@ -52,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Trees and tables
   - Progress bars and scrollbars
 
-[Unreleased]: https://github.com/stanleygomes/codex-notes/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/stanleygomes/codex-notes/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/stanleygomes/codex-notes/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/stanleygomes/codex-notes/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/stanleygomes/codex-notes/commits/1.0.0
