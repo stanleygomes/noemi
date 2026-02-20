@@ -10,10 +10,8 @@
 
     <!-- Theme declarations -->
     <extensions defaultExtensionNs="com.intellij">
-      <themeProvider id="com.nazarethlabs.noemi.july" path="/themes/Noemi_July.theme.json" />
       <themeProvider id="com.nazarethlabs.noemi.november" path="/themes/Noemi_November.theme.json" />
 
-      <bundledColorScheme path="/themes/Noemi_July.xml"/>
-      <bundledColorScheme path="/themes/Noemi_November.xml"/>
+<!--      <bundledColorScheme path="/themes/Noemi_November.xml"/>-->
     </extensions>
 </idea-plugin>

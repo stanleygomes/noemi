@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scheme name="Noemi November" version="142" parent_scheme="Darcula">
+<scheme name="Noemi November" version="142" parent_scheme="Darcula" id="Noemi_November">
   <metaInfo>
-    <property name="created">2024-01-01T00:00:00</property>
     <property name="ide">Idea</property>
-    <property name="ideVersion">2024.1.0.0</property>
-    <property name="modified">2024-01-01T00:00:00</property>
-    <property name="originalScheme">Bearded Theme Monokai Black</property>
   </metaInfo>
   <colors>
     <option name="ADDED_LINES_COLOR" value="A9DC76" />
@@ -55,7 +51,7 @@
     <option name="SELECTED_INDENT_GUIDE" value="6D6D6D" />
     <option name="SELECTED_TEARLINE_COLOR" value="6D6D6D" />
     <option name="SELECTION_BACKGROUND" value="333333" />
-    <option name="SELECTION_FOREGROUND" />
+    <option name="SELECTION_FOREGROUND" value="A0A0A0" />
     <option name="SEPARATOR_ABOVE_COLOR" value="212121" />
     <option name="SEPARATOR_BELOW_COLOR" value="212121" />
     <option name="SOFT_WRAP_SIGN_COLOR" value="6D6D6D" />
@@ -68,12 +64,18 @@
     <option name="VISUAL_INDENT_GUIDE" value="212121" />
     <option name="WHITESPACES" value="212121" />
     <option name="WHITESPACES_MODIFIED_LINES_COLOR" value="78DCE8" />
+    <option name="BACKGROUND" value="141414" />
+    <option name="FOREGROUND" value="a0a0a0" />
+    <option name="SELECTION_BACKGROUND" value="333333" />
+    <option name="SELECTION_FOREGROUND" value="a0a0a0" />
+    <option name="CARET_COLOR" value="a0a0a0" />
+    <option name="CARET_ROW_COLOR" value="1e1e1e" />
   </colors>
   <attributes>
     <!-- Default text -->
     <option name="TEXT">
       <value>
-        <option name="FOREGROUND" value="A0A0A0" />
+        <option name="FOREGROUND" value="a0a0a0" />
         <option name="BACKGROUND" value="141414" />
       </value>
     </option>
