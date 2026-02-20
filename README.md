@@ -1,29 +1,19 @@
-# Noemi Theme
+# 🎨 Noemi Theme
 
 <!-- Plugin description -->
-A beautiful and modern dark theme collection for JetBrains IDEs.
+A beautiful and modern Monokai dark theme collection for JetBrains IDEs.
 
-**Noemi July**: A deep dark theme with red accents, perfect for focused coding sessions.
-
-**Noemi November**: A balanced dark theme with vibrant colors, optimized for comfortable long coding sessions.
+**Noemi November**: A deep dark theme with mute colors, optimized for comfortable long coding sessions.
 
 **Key Features:**
-- Two carefully crafted dark theme variants
-- Optimized color palettes for reduced eye strain
-- Full support for all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, etc.)
-- Professional and modern design
+- Optimized color palettes for reduced eye strain 👀
+- Full support for all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, etc.) 🛠️
+- Professional and modern design ✨
 <!-- Plugin description end -->
 
-## Features
+## Installation 📥
 
-- **Noemi July Theme**: Deep dark theme with red accents for focused coding
-- **Noemi November Theme**: Balanced dark theme with vibrant colors
-- **Optimized Color Palettes**: Designed for comfortable long coding sessions
-- **Full IDE Support**: Compatible with all JetBrains IDEs
-
-## Installation
-
-### From JetBrains Marketplace (Coming Soon)
+### From JetBrains Marketplace
 
 1. Open your JetBrains IDE
 2. Go to `Settings/Preferences` → `Plugins`
@@ -31,7 +21,7 @@ A beautiful and modern dark theme collection for JetBrains IDEs.
 4. Click `Install`
 5. Restart the IDE
 6. Go to `Settings/Preferences` → `Appearance & Behavior` → `Appearance`
-7. Select "Noemi July" or "Noemi November" from the Theme dropdown
+7. Select "Noemi November" from the Theme dropdown
 
 ### Manual Installation
 
@@ -42,9 +32,9 @@ A beautiful and modern dark theme collection for JetBrains IDEs.
 5. Select the downloaded `.zip` file
 6. Restart the IDE
 7. Go to `Settings/Preferences` → `Appearance & Behavior` → `Appearance`
-8. Select "Noemi July" or "Noemi November" from the Theme dropdown
+8. Select "Noemi November" from the Theme dropdown
 
-## Development
+## Development 🛠️
 
 ### Requirements
 
@@ -73,25 +63,6 @@ This will:
 3. Launch the IDE with your theme installed
 4. Any changes you make will require restarting this command
 
-### Project Structure
-
-```
-noemi/
-├── src/
-│   └── main/
-│       └── resources/
-│           ├── META-INF/
-│           │   └── plugin.xml          # Plugin configuration
-│           └── themes/
-│               ├── noemi_dark.theme.json    # Dark theme (Islands UI)
-│               ├── noemi_dark.xml           # Dark theme (Classic)
-│               ├── noemi_light.theme.json   # Light theme (Islands UI)
-│               └── noemi_light.xml          # Light theme (Classic)
-├── build.gradle.kts                    # Build configuration
-├── gradle.properties                   # Project properties
-└── settings.gradle.kts                 # Gradle settings
-```
-
 ### Theme Files
 
 - `.theme.json` files: Modern UI themes with Islands support (JetBrains 2022.1+)
@@ -110,11 +81,35 @@ noemi/
 ./gradlew publishPlugin
 ```
 
-## Compatibility
+## 🚀 CI/CD
 
-- **IDE Build**: 223+ (IntelliJ IDEA 2022.3+)
-- **Until Build**: 242.* (IntelliJ IDEA 2024.2)
-- Compatible with all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, etc.)
+This project uses GitHub Actions for continuous integration and deployment. The following workflows are configured:
+
+### Build Workflow (`build.yml`)
+- **Trigger**: Push to `master` branch or pull requests
+- **Actions**:
+  - Validates Gradle Wrapper
+  - Runs unit tests and plugin verification
+  - Executes Qodana code inspections
+  - Builds the plugin
+  - Runs plugin verifier
+  - Creates a draft release for manual review
+
+### Release Workflow (`release.yml`)
+- **Trigger**: GitHub release publication
+- **Actions**:
+  - Signs and publishes the plugin to JetBrains Marketplace
+  - Updates changelog
+
+### UI Tests Workflow (`run-ui-tests.yml`)
+- **Trigger**: Manual
+- **Actions**:
+  - Runs UI tests on macOS, Windows, and Linux
+
+### Template Verify (`template-verify.yml`)
+- **Trigger**: Repository creation from template
+- **Actions**:
+  - Verifies template setup
 
 ## 🤝 Contributing
 
