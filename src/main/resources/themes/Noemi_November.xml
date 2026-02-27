@@ -138,6 +138,7 @@
     <option name="DEFAULT_INVALID_STRING_ESCAPE">
       <value>
         <option name="FOREGROUND" value="FC6A67" />
+        <option name="EFFECT_COLOR" value="FC6A67" />
         <option name="EFFECT_TYPE" value="1" />
       </value>
     </option>
@@ -562,7 +563,8 @@
     </option>
     <option name="WRONG_REFERENCES_ATTRIBUTES">
       <value>
-        <option name="FOREGROUND" value="FC6A67" />
+        <option name="EFFECT_COLOR" value="FC6A67" />
+        <option name="ERROR_STRIPE_COLOR" value="FC6A67" />
         <option name="EFFECT_TYPE" value="1" />
       </value>
     </option>
