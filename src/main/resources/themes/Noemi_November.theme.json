@@ -20,6 +20,7 @@
       "disabledText": "#6d6d6d",
       "errorForeground": "#fc6a67",
       "infoForeground": "#ffd866",
+      "modifiedItemForeground": "#78dce8",
       "lightSelectionBackground": "#2e2e2e",
       "separatorColor": "#212121"
     },
@@ -415,7 +416,7 @@
       "selectionInactiveForeground": "#a0a0a0",
       "hoverBackground": "#1e1e1e",
       "hoverInactiveBackground": "#1e1e1e",
-      "modifiedItemForeground": "#fc6a67",
+      "modifiedItemForeground": "#78dce8",
       "rowHeight": 24
     },
     "VersionControl": {
