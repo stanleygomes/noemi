@@ -21,7 +21,7 @@
     "textSeparator.foreground": "#3e3e38",
 
     // ── Editor ──────────────────────────────────────────────
-    "editor.background": "#262626",
+    "editor.background": "#121212",
     "editor.foreground": "#c3c1ba",
     "editor.lineHighlightBackground": "#1b1b1b60",
     "editor.lineHighlightBorder": "#1b1b1b00",
@@ -97,22 +97,22 @@
     // ── Title Bar ───────────────────────────────────────────
     "titleBar.activeBackground": "#1f1f1f",
     "titleBar.activeForeground": "#c3c1ba",
-    "titleBar.inactiveBackground": "#262626",
+    "titleBar.inactiveBackground": "#1f1f1f",
     "titleBar.inactiveForeground": "#85837d",
-    "titleBar.border": "#3e3e38",
+    "titleBar.border": "#121212",
 
     // ── Activity Bar ────────────────────────────────────────
-    "activityBar.background": "#1f1f1f",
-    "activityBar.foreground": "#c3c1ba",
+    "activityBar.background": "#121212",
+    "activityBar.foreground": "#d87757",
     "activityBar.inactiveForeground": "#85837d",
-    "activityBar.border": "#3e3e38",
+    "activityBar.border": "#1f1f1f",
     "activityBarBadge.background": "#d87757",
     "activityBarBadge.foreground": "#ffffff",
 
     // ── Side Bar ────────────────────────────────────────────
-    "sideBar.background": "#1f1f1f",
+    "sideBar.background": "#121212",
     "sideBar.foreground": "#c3c1ba",
-    "sideBar.border": "#3e3e38",
+    "sideBar.border": "#1f1f1f",
     "sideBarTitle.foreground": "#c3c1ba",
     "sideBarSectionHeader.background": "#1b1b1b60",
     "sideBarSectionHeader.foreground": "#c3c1ba",
@@ -133,9 +133,9 @@
     "tree.indentGuidesStroke": "#3e3e38",
 
     // ── Status Bar ──────────────────────────────────────────
-    "statusBar.background": "#1f1f1f",
+    "statusBar.background": "#181818",
     "statusBar.foreground": "#b7b5a6",
-    "statusBar.border": "#3e3e38",
+    "statusBar.border": "#333333",
     "statusBar.debuggingBackground": "#d87757",
     "statusBar.debuggingForeground": "#ffffff",
     "statusBar.noFolderBackground": "#1f1f1f",
@@ -148,28 +148,28 @@
     "statusBarItem.prominentHoverBackground": "#1a1813",
 
     // ── Tabs ────────────────────────────────────────────────
-    "tab.activeBackground": "#262626",
+    "tab.activeBackground": "#121212",
     "tab.activeForeground": "#f7f5ee",
-    "tab.inactiveBackground": "#1f1f1f",
+    "tab.inactiveBackground": "#181818",
     "tab.inactiveForeground": "#9a988f",
     "tab.border": "#3e3e38",
-    "tab.activeBorder": "#262626",
+    "tab.activeBorder": "#121212",
     "tab.activeBorderTop": "#d87757",
     "tab.unfocusedActiveBorderTop": "#d8775760",
     "tab.hoverBackground": "#262626",
-    "editorGroupHeader.tabsBackground": "#1f1f1f",
+    "editorGroupHeader.tabsBackground": "#121212",
     "editorGroupHeader.tabsBorder": "#3e3e38",
     "editorGroup.border": "#3e3e38",
 
     // ── Panel ───────────────────────────────────────────────
-    "panel.background": "#262626",
+    "panel.background": "#121212",
     "panel.border": "#3e3e38",
     "panelTitle.activeBorder": "#d87757",
     "panelTitle.activeForeground": "#f7f5ee",
     "panelTitle.inactiveForeground": "#9a988f",
 
     // ── Terminal ────────────────────────────────────────────
-    "terminal.background": "#262626",
+    "terminal.background": "#181818",
     "terminal.foreground": "#c3c1ba",
     "terminal.ansiBlack": "#1b1b1b",
     "terminal.ansiRed": "#f14444",
@@ -230,7 +230,7 @@
 
     // ── Peek View ───────────────────────────────────────────
     "peekView.border": "#d87757",
-    "peekViewEditor.background": "#262626",
+    "peekViewEditor.background": "#121212",
     "peekViewEditor.matchHighlightBackground": "#d8775730",
     "peekViewResult.background": "#1f1f1f",
     "peekViewResult.fileForeground": "#c3c1ba",
@@ -297,7 +297,7 @@
 
     // ── Welcome Page ────────────────────────────────────────
     "walkThrough.embeddedEditorBackground": "#1f1f1f",
-    "welcomePage.background": "#262626",
+    "welcomePage.background": "#121212",
     "welcomePage.tileBackground": "#1f1f1f",
     "welcomePage.tileHoverBackground": "#1b1b1b",
     "welcomePage.tileBorder": "#3e3e38",
