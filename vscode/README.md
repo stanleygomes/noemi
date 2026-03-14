@@ -1,6 +1,6 @@
 # 🎨 Noemi Theme
 
-![screenshot](resources/theme.png)
+![screenshot](https://github.com/stanleygomes/noemi/raw/HEAD/vscode/resources/theme.png)
 
 The ideal colors and contrast for long hours of coding. Your eyes will thank you.
 
