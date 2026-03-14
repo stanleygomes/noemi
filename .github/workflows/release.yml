@@ -108,7 +108,7 @@ jobs:
 
           sed -i "/^## \[Unreleased\]/r /tmp/jb_section.txt" jetbrains/CHANGELOG.md
 
-          REPO="stanleygomes/codex-notes"
+          REPO="stanleygomes/noemi"
           if [ -n "$LAST_TAG" ]; then
             VERSION_LINK="[$VERSION]: https://github.com/$REPO/compare/$LAST_TAG...$VERSION"
           else
@@ -244,23 +244,23 @@ jobs:
         run: npm ci
 
       - name: Package VSIX
-        run: npx @vscode/vsce package --no-yarn --out codex-notes.vsix
+        run: npx @vscode/vsce package --no-yarn --out noemi-theme.vsix
 
       - name: Publish to Visual Studio Marketplace
         env:
           VSCE_PAT: ${{ secrets.MARKETPLACE_VSCE_PAT }}
-        run: npx @vscode/vsce publish --packagePath codex-notes.vsix --no-yarn
+        run: npx @vscode/vsce publish --packagePath noemi-theme.vsix --no-yarn
 
       - name: Publish to OpenVSX Marketplace
         env:
           OVSX_PAT: ${{ secrets.MARKETPLACE_OVSX_PAT }}
-        run: npx ovsx publish codex-notes.vsix
+        run: npx ovsx publish noemi-theme.vsix
 
       - name: Upload VSIX Artifact
         uses: actions/upload-artifact@v4
         with:
           name: vscode-extension-vsix
-          path: vscode/codex-notes.vsix
+          path: vscode/noemi-theme.vsix
 
   create_release:
     name: Create GitHub Release
