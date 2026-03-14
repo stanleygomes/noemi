@@ -1,13 +1,12 @@
 # 🎨 Noemi Theme
 
 <!-- Plugin description -->
-A beautiful and modern Monokai dark theme collection for JetBrains IDEs.
-
-**Noemi November**: A deep dark theme with mute colors, optimized for comfortable long coding sessions.
+The ideal colors and contrast for long hours of coding. Your eyes will thank you.
 
 **Key Features:**
 - Optimized color palettes for reduced eye strain 👀
 - Full support for all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, etc.) 🛠️
+- Full support for vscode and it's based IDEs like AntiGravity and Cursor
 - Professional and modern design ✨
 <!-- Plugin description end -->
 
