@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: vscode-extension-vsix
-          path: vscode/codex-notes.vsix
+          path: vscode/noemi-theme.vsix
 
   # Prepare the environment and build the plugin
   build:
