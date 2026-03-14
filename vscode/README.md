@@ -1,5 +1,7 @@
 # 🎨 Noemi Theme
 
+![screenshot](resources/theme.png)
+
 The ideal colors and contrast for long hours of coding. Your eyes will thank you.
 
 ## Available Theme Variations

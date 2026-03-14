@@ -10,6 +10,14 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 - Professional and modern design ✨
 <!-- Plugin description end -->
 
+## For VS Code
+
+![screenshot](vscode/resources/theme.png)
+
+## For Jebrains IDEs
+
+![screenshot](jetbrains/src/main/resources/screenshot.png)
+
 ## Installation 📥
 
 ### JetBrains IDEs
@@ -60,8 +68,11 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 
 ### Requirements
 
+**Jetbrains plugin**
 - Java 17 or higher
 - Gradle 8.13 (included via wrapper)
+
+**vscode plugin**
 - Node.js 20+ (for VS Code extension packaging)
 - npm 10+
 
