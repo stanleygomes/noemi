@@ -184,5 +184,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with 🔥 by NazarethLabs
-
-[gh:build]: https://github.com/stanleygomes/codex-notes/actions?query=workflow%3ABuild
