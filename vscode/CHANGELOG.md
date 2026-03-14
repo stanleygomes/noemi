@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-03-14
+
+- Merge branch 'master' into release/v1.3.0
+- docs: fix imagem theme url
+
+
 ## [1.3.0] - 2026-03-14
 
 - fix: build vscode extension
