@@ -41,5 +41,4 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_LANDPAGE_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_LANDPAGE_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_LANDPAGE_PROJECT_ID }}
-          working-directory: landpage
-          vercel-args: "--prod"
+          vercel-args: "--prod --cwd=landpage"
