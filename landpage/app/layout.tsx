@@ -3,9 +3,9 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Codex Notes",
+  title: "Noemi Theme",
   description:
-    "A powerful plugin for managing notes within your IDE. Keep your thoughts, code snippets, and documentation organized without leaving your development environment.",
+    "The ideal colors and contrast for long hours of coding. Your eyes will thank you.",
 };
 
 export default function RootLayout({
