@@ -1,0 +1,35 @@
+{
+  "name": "noemi-theme",
+  "displayName": "Noemi Theme",
+  "description": "...",
+  "version": "0.0.1",
+  "license": "MIT",
+  "publisher": "stanleygomes",
+  "repository": "https://github.com/stanleygomes/noemi",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "icon": "resources/icons/icon.png",
+  "contributes": {
+    "themes": [
+      {
+        "label": "Noemi Light",
+        "uiTheme": "vs",
+        "path": "./themes/light-theme.json"
+      },
+      {
+        "label": "Noemi Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/dark-theme.json"
+      },
+      {
+        "label": "Noemi High Contrast",
+        "uiTheme": "hc-black",
+        "path": "./themes/high-contrast-theme.json"
+      }
+    ]
+  }
+}
