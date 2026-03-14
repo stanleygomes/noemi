@@ -12,7 +12,9 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 
 ## Installation 📥
 
-### From JetBrains Marketplace
+### JetBrains IDEs
+
+#### From JetBrains Marketplace
 
 1. Open your JetBrains IDE
 2. Go to `Settings/Preferences` → `Plugins`
@@ -33,17 +35,41 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 7. Go to `Settings/Preferences` → `Appearance & Behavior` → `Appearance`
 8. Select "Noemi November" from the Theme dropdown
 
+### VS Code and VS Code-based IDEs
+
+#### From Visual Studio Marketplace
+
+1. Open VS Code
+2. Go to `Extensions` (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Search for "Noemi Theme"
+4. Click `Install`
+5. Open `Preferences: Color Theme` and select one of:
+   - `Noemi Light`
+   - `Noemi Dark`
+   - `Noemi High Contrast`
+
+#### Manual Installation (.vsix)
+
+1. Download the latest `.vsix` from the [Releases](https://github.com/stanleygomes/noemi/releases) page
+2. In VS Code, open `Extensions`
+3. Click the `...` menu → `Install from VSIX...`
+4. Select the downloaded `.vsix` file
+5. Open `Preferences: Color Theme` and choose a Noemi theme
+
 ## Development 🛠️
 
 ### Requirements
 
 - Java 17 or higher
 - Gradle 8.13 (included via wrapper)
+- Node.js 20+ (for VS Code extension packaging)
+- npm 10+
 
-### Building the Plugin
+### Building the JetBrains Plugin
 
 ```bash
 # Build the plugin
+cd jetbrains
 ./gradlew buildPlugin
 
 # The plugin will be created at: build/distributions/noemi-1.0.0.zip
@@ -66,6 +92,15 @@ This will:
 
 - `.theme.json` files: Modern UI themes with Islands support (JetBrains 2022.1+)
 - `.xml` files: Classic color schemes for the editor
+- `vscode/themes/*.json`: VS Code light, dark and high-contrast themes
+
+### Building the VS Code Extension
+
+```bash
+cd vscode
+npm install
+npx @vscode/vsce package --no-yarn
+```
 
 ## Publishing
 
