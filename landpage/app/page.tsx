@@ -24,7 +24,7 @@ const DOWNLOAD_BUTTONS: DownloadButton[] = [
   },
   {
     label: "Visual Studio Code",
-    href: "https://marketplace.visualstudio.com/items?itemName=StanleyGomes.noemi",
+    href: "https://marketplace.visualstudio.com/items?itemName=StanleyGomes.noemi-theme",
     bgColor: "bg-[#0078D4]",
     textColor: "text-white",
     available: true,
@@ -38,7 +38,7 @@ const DOWNLOAD_BUTTONS: DownloadButton[] = [
   },
   {
     label: "Antigravity",
-    href: "https://open-vsx.org/extension/stanleygomes/noemi",
+    href: "https://open-vsx.org/extension/stanleygomes/noemi-theme",
     bgColor: "bg-[#1a1a1a]",
     textColor: "text-white",
     available: true,
