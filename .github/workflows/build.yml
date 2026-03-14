@@ -24,14 +24,51 @@ jobs:
       - name: Validate Conventional Commits
         uses: wagoid/commitlint-github-action@v5
 
-  # Prepare the environment and build the plugin
-  build:
-    name: Build
+  # Build and validate VS Code extension
+  buildVscode:
+    name: Build VS Code Extension
     needs: [ validateCommits ]
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.update_version.outputs.version }}
-      previous_version: ${{ steps.update_version.outputs.previous_version }}
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: vscode
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: vscode/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # - name: Test
+      #   run: npm test
+
+      - name: Package VSIX
+        run: npx @vscode/vsce package --no-yarn --out codex-notes.vsix
+
+      - name: Upload VSIX Artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v6
+        with:
+          name: vscode-extension-vsix
+          path: vscode/codex-notes.vsix
+
+  # Prepare the environment and build the plugin
+  build:
+    name: Build Jetbrains Plugin
+    needs: [ validateCommits ]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jetbrains
     steps:
 
       # Free GitHub Actions Environment Disk Space
@@ -46,22 +83,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
-      # Update version for release builds
-      - name: Update Version for Release
-        if: github.ref == 'refs/heads/master'
-        id: update_version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          CURRENT_VERSION=$(grep 'pluginVersion' gradle.properties | cut -d'=' -f2 | tr -d ' ')
-
-          chmod +x ./scripts/update-version.sh
-          ./scripts/update-version.sh
-
-          VERSION=$(grep 'pluginVersion' gradle.properties | cut -d'=' -f2 | tr -d ' ')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "previous_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
       # Set up the Java environment for the next steps
       - name: Setup Java
@@ -83,7 +104,7 @@ jobs:
         id: artifact
         shell: bash
         run: |
-          cd ${{ github.workspace }}/build/distributions
+          cd ${{ github.workspace }}/jetbrains/build/distributions
           FILENAME=`ls *.zip`
           unzip "$FILENAME" -d content
 
@@ -95,13 +116,15 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.artifact.outputs.filename }}
-          path: ./build/distributions/content/*/*
+          path: ./jetbrains/build/distributions/content/*/*
 
-  # Run plugin structure verification along with IntelliJ Plugin Verifier
   verify:
     name: Verify plugin
     needs: [ build ]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jetbrains
     steps:
 
       # Free GitHub Actions Environment Disk Space
@@ -130,6 +153,8 @@ jobs:
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: ./gradlew verifyPlugin
 
       # Collect Plugin Verifier Result
@@ -138,80 +163,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: pluginVerifier-result
-          path: ${{ github.workspace }}/build/reports/pluginVerifier
-
-  # Prepare a draft release for GitHub Releases page for the manual verification
-  # If accepted and published, the release workflow would be triggered
-  releaseDraft:
-    name: Release draft
-    if: github.event_name != 'pull_request'
-    needs: [ build, verify ]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-
-      # Check out the current repository
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      # Set up the Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version: 17
-
-      # Setup Gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-        with:
-          cache-read-only: true
-
-      # Remove old release drafts by using the curl request for the available releases with a draft flag
-      - name: Remove Old Release Drafts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api repos/{owner}/{repo}/releases \
-            --jq '.[] | select(.draft == true) | .id' \
-            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
-
-      # Create a new release draft which is not publicly visible and requires manual acceptance
-      - name: Create Release Draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=${{ needs.build.outputs.version }}
-          PREVIOUS_TAG=${{ needs.build.outputs.previous_version }}
-
-          RELEASE_NOTE="./build/tmp/release_note.txt"
-          mkdir -p "$(dirname "$RELEASE_NOTE")"
-
-          # Generate release notes
-          echo "## Changes" > $RELEASE_NOTE
-          echo "" >> $RELEASE_NOTE
-
-          if [ -n "$PREVIOUS_TAG" ]; then
-            COMMITS=$(git log --oneline --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
-          else
-            COMMITS=$(git log --oneline --pretty=format:"- %s" HEAD)
-          fi
-
-          echo "$COMMITS" >> $RELEASE_NOTE
-          echo "" >> $RELEASE_NOTE
-          echo "## Diff" >> $RELEASE_NOTE
-          echo "" >> $RELEASE_NOTE
-          if [ -n "$PREVIOUS_TAG" ]; then
-            echo "Compare: https://github.com/stanleygomes/noemi/compare/$PREVIOUS_TAG...$VERSION" >> $RELEASE_NOTE
-          fi
-
-          echo "Release notes content:"
-          cat $RELEASE_NOTE
-
-          gh release create $VERSION \
-            --draft \
-            --title "$VERSION" \
-            --notes-file $RELEASE_NOTE
+          path: ${{ github.workspace }}/jetbrains/build/reports/pluginVerifier

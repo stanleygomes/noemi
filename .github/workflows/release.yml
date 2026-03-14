@@ -1,64 +1,206 @@
 name: Release
+
 on:
-  release:
-    types: [ prereleased, released ]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Release target"
+        type: choice
+        options:
+          - both
+          - jetbrains
+          - vscode
+        default: both
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
 
-  # Prepare and publish the plugin to JetBrains Marketplace repository
-  release:
-    name: Publish Plugin
+  prepare_release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      release_branch: ${{ steps.release_ref.outputs.release_branch }}
+      release_sha: ${{ steps.release_ref.outputs.release_sha }}
+    steps:
+
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Calculate Version
+        id: version
+        run: |
+          LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
+
+          if [ -n "$LAST_TAG" ]; then
+            CURRENT_VERSION="$LAST_TAG"
+            COMMITS=$(git log --oneline "$LAST_TAG"..HEAD || echo "")
+          else
+            CURRENT_VERSION=$(grep 'pluginVersion' jetbrains/gradle.properties | cut -d'=' -f2 | tr -d ' ')
+            COMMITS=$(git log --oneline -50 || echo "")
+          fi
+
+          INCREMENT="patch"
+          if echo "$COMMITS" | grep -qiE "breaking.change|[a-z]+!:"; then
+            INCREMENT="major"
+          elif echo "$COMMITS" | grep -qE "feat[:(]"; then
+            INCREMENT="minor"
+          fi
+
+          IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+          case $INCREMENT in
+            major) NEW_VERSION="$((major + 1)).0.0" ;;
+            minor) NEW_VERSION="$major.$((minor + 1)).0" ;;
+            patch) NEW_VERSION="$major.$minor.$((patch + 1))" ;;
+          esac
+
+          if git tag -l "$NEW_VERSION" | grep -q "^$NEW_VERSION$"; then
+            echo "Error: Tag $NEW_VERSION already exists"
+            exit 1
+          fi
+
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $NEW_VERSION (from $CURRENT_VERSION, increment: $INCREMENT)"
+
+      - name: Update JetBrains Version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          sed -i "s/pluginVersion = .*/pluginVersion = $VERSION/" jetbrains/gradle.properties
+
+      - name: Update VS Code Version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" vscode/package.json
+
+      - name: Update JetBrains Changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DATE=$(date +%Y-%m-%d)
+          LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
+
+          if [ -n "$LAST_TAG" ]; then
+            git log --format="- %s" "$LAST_TAG"..HEAD -- jetbrains/ > /tmp/jb_entries.txt
+          else
+            git log --format="- %s" -50 -- jetbrains/ > /tmp/jb_entries.txt
+          fi
+
+          if [ ! -s /tmp/jb_entries.txt ]; then
+            echo "- chore: release $VERSION" > /tmp/jb_entries.txt
+          fi
+
+          printf "\n## [%s] - %s\n\n" "$VERSION" "$DATE" > /tmp/jb_section.txt
+          cat /tmp/jb_entries.txt >> /tmp/jb_section.txt
+          printf "\n" >> /tmp/jb_section.txt
+
+          sed -i "/^## \[Unreleased\]/r /tmp/jb_section.txt" jetbrains/CHANGELOG.md
+
+          REPO="stanleygomes/codex-notes"
+          if [ -n "$LAST_TAG" ]; then
+            VERSION_LINK="[$VERSION]: https://github.com/$REPO/compare/$LAST_TAG...$VERSION"
+          else
+            VERSION_LINK="[$VERSION]: https://github.com/$REPO/commits/$VERSION"
+          fi
+
+          sed -i "s|^\[Unreleased\]:.*|\[Unreleased\]: https://github.com/$REPO/compare/$VERSION...HEAD\n$VERSION_LINK|" jetbrains/CHANGELOG.md
+
+      - name: Update VS Code Changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DATE=$(date +%Y-%m-%d)
+          LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
+
+          if [ -n "$LAST_TAG" ]; then
+            git log --format="- %s" "$LAST_TAG"..HEAD -- vscode/ > /tmp/vs_entries.txt
+          else
+            git log --format="- %s" -50 -- vscode/ > /tmp/vs_entries.txt
+          fi
+
+          if [ ! -s /tmp/vs_entries.txt ]; then
+            echo "- chore: release $VERSION" > /tmp/vs_entries.txt
+          fi
+
+          printf "\n## [%s] - %s\n\n" "$VERSION" "$DATE" > /tmp/vs_section.txt
+          cat /tmp/vs_entries.txt >> /tmp/vs_section.txt
+          printf "\n" >> /tmp/vs_section.txt
+
+          sed -i "/^## \[Unreleased\]/r /tmp/vs_section.txt" vscode/CHANGELOG.md
+
+      - name: Create Release Pull Request
+        id: release_pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/v${{ steps.version.outputs.version }}
+          base: master
+          title: "chore(release): v${{ steps.version.outputs.version }}"
+          commit-message: "chore(release): v${{ steps.version.outputs.version }}"
+          body: "Automated release preparation for version v${{ steps.version.outputs.version }}."
+
+      - name: Set release branch output
+        id: release_ref
+        run: |
+          BRANCH="${{ steps.release_pr.outputs.pull-request-branch }}"
+          SHA="${{ steps.release_pr.outputs.pull-request-head-sha }}"
+          if [ -z "$BRANCH" ] || [ -z "$SHA" ]; then
+            echo "Failed to create release PR branch for version v${{ steps.version.outputs.version }}"
+            exit 1
+          fi
+          echo "release_branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "release_sha=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Create Tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git tag "$VERSION" "${{ steps.release_ref.outputs.release_sha }}"
+          git push origin "$VERSION"
+
+  publish_jetbrains:
+    name: Publish JetBrains Plugin
+    needs: prepare_release
+    if: inputs.target == 'jetbrains' || inputs.target == 'both'
     runs-on: ubuntu-latest
     environment: production
     permissions:
       contents: write
-      pull-requests: write
+    defaults:
+      run:
+        working-directory: jetbrains
     steps:
 
-      # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
           large-packages: false
 
-      # Check out the current repository
       - name: Fetch Sources
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ needs.prepare_release.outputs.release_branch }}
 
-      # Update version to match the release tag
-      - name: Update Version
-        run: |
-          sed -i "s/pluginVersion = .*/pluginVersion = ${{ github.event.release.tag_name }}/" gradle.properties
-
-      # Set up the Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: 17
 
-      # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          cache-read-only: true
 
-      # Update the Unreleased section with the current release note
-      - name: Patch Changelog
-        if: ${{ github.event.release.body != '' }}
-        env:
-          CHANGELOG: ${{ github.event.release.body }}
-        run: |
-          RELEASE_NOTE="./build/tmp/release_note.txt"
-          mkdir -p "$(dirname "$RELEASE_NOTE")"
-          echo "$CHANGELOG" > $RELEASE_NOTE
-
-          ./gradlew patchChangelog --release-note-file=$RELEASE_NOTE
-
-      # Publish the plugin to JetBrains Marketplace
       - name: Publish Plugin
         env:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
@@ -67,35 +209,130 @@ jobs:
           PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
         run: ./gradlew publishPlugin
 
-      # Upload an artifact as a release asset
-      - name: Upload Release Asset
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.event.release.tag_name }} ./build/distributions/*
+      - name: Upload Plugin Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jetbrains-plugin
+          path: jetbrains/build/distributions/*.zip
 
-      # Create a pull request for release updates
-      - name: Create Release Updates Pull Request
+  publish_vscode:
+    name: Publish VS Code Extension
+    needs: prepare_release
+    if: inputs.target == 'vscode' || inputs.target == 'both'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: vscode
+    steps:
+
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare_release.outputs.release_branch }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: vscode/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Package VSIX
+        run: npx @vscode/vsce package --no-yarn --out codex-notes.vsix
+
+      - name: Publish to Visual Studio Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.MARKETPLACE_VSCE_PAT }}
+        run: npx @vscode/vsce publish --packagePath codex-notes.vsix --no-yarn
+
+      - name: Publish to OpenVSX Marketplace
+        env:
+          OVSX_PAT: ${{ secrets.MARKETPLACE_OVSX_PAT }}
+        run: npx ovsx publish codex-notes.vsix
+
+      - name: Upload VSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extension-vsix
+          path: vscode/codex-notes.vsix
+
+  create_release:
+    name: Create GitHub Release
+    needs: [prepare_release, publish_jetbrains, publish_vscode]
+    if: |
+      always() &&
+      needs.prepare_release.result == 'success' &&
+      (needs.publish_jetbrains.result == 'success' || needs.publish_jetbrains.result == 'skipped') &&
+      (needs.publish_vscode.result == 'success' || needs.publish_vscode.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare_release.outputs.release_branch }}
+          fetch-depth: 0
+
+      - name: Generate Release Notes
+        run: |
+          VERSION="${{ needs.prepare_release.outputs.version }}"
+          LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | grep -v "^$VERSION$" | tail -1 || true)
+
+          if [ -n "$LAST_TAG" ]; then
+            git log --format="- %s" "$LAST_TAG"..HEAD > /tmp/commits.txt
+          else
+            git log --format="- %s" -50 > /tmp/commits.txt
+          fi
+
+          if [ ! -s /tmp/commits.txt ]; then
+            echo "- chore: release $VERSION" > /tmp/commits.txt
+          fi
+
+          printf "## What's Changed\n\n" > /tmp/release_notes.txt
+          cat /tmp/commits.txt >> /tmp/release_notes.txt
+
+      - name: Download JetBrains Artifact
+        if: needs.publish_jetbrains.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: jetbrains-plugin
+          path: artifacts/jetbrains/
+
+      - name: Download VS Code Artifact
+        if: needs.publish_vscode.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: vscode-extension-vsix
+          path: artifacts/vscode/
+
+      - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          BRANCH="release-updates-$VERSION"
-          LABEL="release updates"
-
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-
-          git checkout -b $BRANCH
-          git commit -am "chore: release updates - $VERSION"
-          git push --set-upstream origin $BRANCH
-
-          gh label create "$LABEL" \
-            --description "Pull requests with release updates" \
-            --force \
-            || true
-
-          gh pr create \
-            --title "Release updates - \`$VERSION\`" \
-            --body "Update pluginVersion and changelog for the \`$VERSION\` release." \
-            --label "$LABEL" \
-            --head $BRANCH
+          VERSION="${{ needs.prepare_release.outputs.version }}"
+          TAG="$VERSION"
+          ASSETS=()
+          if [ -d artifacts/jetbrains ] && [ -n "$(ls -A artifacts/jetbrains 2>/dev/null)" ]; then
+            ASSETS+=(artifacts/jetbrains/*)
+          fi
+          if [ -d artifacts/vscode ] && [ -n "$(ls -A artifacts/vscode 2>/dev/null)" ]; then
+            ASSETS+=(artifacts/vscode/*)
+          fi
+          if [ "${#ASSETS[@]}" -gt 0 ]; then
+            gh release create "$TAG" \
+              --title "$VERSION" \
+              --notes-file /tmp/release_notes.txt \
+              "${ASSETS[@]}"
+          else
+            gh release create "$TAG" \
+              --title "$VERSION" \
+              --notes-file /tmp/release_notes.txt
+          fi
