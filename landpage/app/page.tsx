@@ -3,8 +3,7 @@ import Image from "next/image";
 import logo from "./img/logo.png";
 
 const GITHUB_URL = "https://github.com/stanleygomes/noemi";
-const LICENSE_URL =
-  "https://github.com/stanleygomes/noemi/blob/master/LICENSE";
+const LICENSE_URL = "https://github.com/stanleygomes/noemi/blob/master/LICENSE";
 
 interface DownloadButton {
   label: string;
@@ -15,13 +14,6 @@ interface DownloadButton {
 }
 
 const DOWNLOAD_BUTTONS: DownloadButton[] = [
-  {
-    label: "JetBrains IDEs",
-    href: "https://plugins.jetbrains.com/plugin/30240-noemi-theme",
-    bgColor: "bg-[#F8025E]",
-    textColor: "text-white",
-    available: true,
-  },
   {
     label: "Visual Studio Code",
     href: "https://marketplace.visualstudio.com/items?itemName=StanleyGomes.noemi-theme",
@@ -48,13 +40,7 @@ const DOWNLOAD_BUTTONS: DownloadButton[] = [
 function Logo(): JSX.Element {
   return (
     <div className="p-4 inline-block">
-      <Image
-        src={logo}
-        alt="Noemi logo"
-        width={200}
-        height={200}
-        priority
-      />
+      <Image src={logo} alt="Noemi logo" width={200} height={200} priority />
     </div>
   );
 }
@@ -101,7 +87,8 @@ export default function Home(): JSX.Element {
               Noemi Theme
             </h1>
             <p className="text-xl text-black leading-relaxed px-6 py-4">
-              The ideal colors and contrast for long hours of coding. Your eyes will thank you.
+              The ideal colors and contrast for long hours of coding. Your eyes
+              will thank you.
             </p>
           </div>
 
