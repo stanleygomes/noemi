@@ -11,7 +11,7 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 - Professional and modern design ✨
 <!-- Plugin description end -->
 
-![screenshot](https://github.com/stanleygomes/noemi/raw/HEAD/vscode/resources/theme.png)
+![screenshot](https://github.com/stanleygomes/noemi/raw/HEAD/resources/theme.png)
 
 ## Available Theme Variations
 
