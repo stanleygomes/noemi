@@ -2,22 +2,12 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: "Release target"
-        type: choice
-        options:
-          - both
-          - jetbrains
-          - vscode
-        default: both
 
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
-
   prepare_release:
     name: Prepare Release
     runs-on: ubuntu-latest
@@ -29,7 +19,6 @@ jobs:
       release_branch: ${{ steps.release_ref.outputs.release_branch }}
       release_sha: ${{ steps.release_ref.outputs.release_sha }}
     steps:
-
       - name: Fetch Sources
         uses: actions/checkout@v6
         with:
@@ -50,7 +39,7 @@ jobs:
             CURRENT_VERSION="$LAST_TAG"
             COMMITS=$(git log --oneline "$LAST_TAG"..HEAD || echo "")
           else
-            CURRENT_VERSION=$(grep 'pluginVersion' jetbrains/gradle.properties | cut -d'=' -f2 | tr -d ' ')
+            CURRENT_VERSION=$(grep 'version' package.json | cut -d'=' -f2 | tr -d ' ')
             COMMITS=$(git log --oneline -50 || echo "")
           fi
 
@@ -76,48 +65,12 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Version: $NEW_VERSION (from $CURRENT_VERSION, increment: $INCREMENT)"
 
-      - name: Update JetBrains Version
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          sed -i "s/pluginVersion = .*/pluginVersion = $VERSION/" jetbrains/gradle.properties
-
-      - name: Update VS Code Version
+      - name: Update Extension Version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" vscode/package.json
 
-      - name: Update JetBrains Changelog
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          DATE=$(date +%Y-%m-%d)
-          LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
-
-          if [ -n "$LAST_TAG" ]; then
-            git log --format="- %s" "$LAST_TAG"..HEAD -- jetbrains/ > /tmp/jb_entries.txt
-          else
-            git log --format="- %s" -50 -- jetbrains/ > /tmp/jb_entries.txt
-          fi
-
-          if [ ! -s /tmp/jb_entries.txt ]; then
-            echo "- chore: release $VERSION" > /tmp/jb_entries.txt
-          fi
-
-          printf "\n## [%s] - %s\n\n" "$VERSION" "$DATE" > /tmp/jb_section.txt
-          cat /tmp/jb_entries.txt >> /tmp/jb_section.txt
-          printf "\n" >> /tmp/jb_section.txt
-
-          sed -i "/^## \[Unreleased\]/r /tmp/jb_section.txt" jetbrains/CHANGELOG.md
-
-          REPO="stanleygomes/noemi"
-          if [ -n "$LAST_TAG" ]; then
-            VERSION_LINK="[$VERSION]: https://github.com/$REPO/compare/$LAST_TAG...$VERSION"
-          else
-            VERSION_LINK="[$VERSION]: https://github.com/$REPO/commits/$VERSION"
-          fi
-
-          sed -i "s|^\[Unreleased\]:.*|\[Unreleased\]: https://github.com/$REPO/compare/$VERSION...HEAD\n$VERSION_LINK|" jetbrains/CHANGELOG.md
-
-      - name: Update VS Code Changelog
+      - name: Update Changelog
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           DATE=$(date +%Y-%m-%d)
@@ -168,57 +121,9 @@ jobs:
           git tag "$VERSION" "${{ steps.release_ref.outputs.release_sha }}"
           git push origin "$VERSION"
 
-  publish_jetbrains:
-    name: Publish JetBrains Plugin
+  publish:
+    name: Publish Extension
     needs: prepare_release
-    if: inputs.target == 'jetbrains' || inputs.target == 'both'
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: write
-    defaults:
-      run:
-        working-directory: jetbrains
-    steps:
-
-      - name: Maximize Build Space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: false
-          large-packages: false
-
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.prepare_release.outputs.release_branch }}
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: zulu
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      - name: Publish Plugin
-        env:
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-          CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
-        run: ./gradlew publishPlugin
-
-      - name: Upload Plugin Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: jetbrains-plugin
-          path: jetbrains/build/distributions/*.zip
-
-  publish_vscode:
-    name: Publish VS Code Extension
-    needs: prepare_release
-    if: inputs.target == 'vscode' || inputs.target == 'both'
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -227,7 +132,6 @@ jobs:
       run:
         working-directory: vscode
     steps:
-
       - name: Fetch Sources
         uses: actions/checkout@v6
         with:
@@ -264,17 +168,15 @@ jobs:
 
   create_release:
     name: Create GitHub Release
-    needs: [prepare_release, publish_jetbrains, publish_vscode]
+    needs: [prepare_release, publish]
     if: |
       always() &&
       needs.prepare_release.result == 'success' &&
-      (needs.publish_jetbrains.result == 'success' || needs.publish_jetbrains.result == 'skipped') &&
-      (needs.publish_vscode.result == 'success' || needs.publish_vscode.result == 'skipped')
+      needs.publish.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-
       - name: Fetch Sources
         uses: actions/checkout@v6
         with:
@@ -299,15 +201,7 @@ jobs:
           printf "## What's Changed\n\n" > /tmp/release_notes.txt
           cat /tmp/commits.txt >> /tmp/release_notes.txt
 
-      - name: Download JetBrains Artifact
-        if: needs.publish_jetbrains.result == 'success'
-        uses: actions/download-artifact@v4
-        with:
-          name: jetbrains-plugin
-          path: artifacts/jetbrains/
-
-      - name: Download VS Code Artifact
-        if: needs.publish_vscode.result == 'success'
+      - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: vscode-extension-vsix
@@ -320,9 +214,6 @@ jobs:
           VERSION="${{ needs.prepare_release.outputs.version }}"
           TAG="$VERSION"
           ASSETS=()
-          if [ -d artifacts/jetbrains ] && [ -n "$(ls -A artifacts/jetbrains 2>/dev/null)" ]; then
-            ASSETS+=(artifacts/jetbrains/*)
-          fi
           if [ -d artifacts/vscode ] && [ -n "$(ls -A artifacts/vscode 2>/dev/null)" ]; then
             ASSETS+=(artifacts/vscode/*)
           fi
