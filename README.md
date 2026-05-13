@@ -7,14 +7,21 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 **Key Features:**
 
 - Optimized color palettes for reduced eye strain 👀
-- Full support for all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, etc.) 🛠️
-- Full support for vscode and it's based IDEs like AntiGravity and Cursor
+- Full support for VSCode and it's based IDEs like Antigravity and Cursor
 - Professional and modern design ✨
 <!-- Plugin description end -->
 
-## For VS Code
+![screenshot](https://github.com/stanleygomes/noemi/raw/HEAD/vscode/resources/theme.png)
 
-![screenshot](vscode/resources/theme.png)
+## Available Theme Variations
+
+Noemi Theme for VS Code comes in three variations, each designed for different preferences and accessibility needs:
+
+- **Noemi Dark**: A comfortable dark theme for long coding sessions.
+- **Noemi Light**: A clean light theme for bright environments.
+- **Noemi High Contrast**: Enhanced contrast for improved accessibility and visibility.
+
+Select your preferred theme in VS Code's theme settings after installation.
 
 ## Installation 📥
 
