@@ -39,7 +39,7 @@ jobs:
             CURRENT_VERSION="$LAST_TAG"
             COMMITS=$(git log --oneline "$LAST_TAG"..HEAD || echo "")
           else
-            CURRENT_VERSION=$(grep 'version' package.json | cut -d'=' -f2 | tr -d ' ')
+            CURRENT_VERSION=$(jq -r .version package.json)
             COMMITS=$(git log --oneline -50 || echo "")
           fi
 
