@@ -68,7 +68,7 @@ jobs:
       - name: Update Extension Version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" vscode/package.json
+          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" package.json
 
       - name: Update Changelog
         run: |
@@ -77,9 +77,9 @@ jobs:
           LAST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
 
           if [ -n "$LAST_TAG" ]; then
-            git log --format="- %s" "$LAST_TAG"..HEAD -- vscode/ > /tmp/vs_entries.txt
+            git log --format="- %s" "$LAST_TAG"..HEAD -- > /tmp/vs_entries.txt
           else
-            git log --format="- %s" -50 -- vscode/ > /tmp/vs_entries.txt
+            git log --format="- %s" -50 -- > /tmp/vs_entries.txt
           fi
 
           if [ ! -s /tmp/vs_entries.txt ]; then
@@ -90,7 +90,7 @@ jobs:
           cat /tmp/vs_entries.txt >> /tmp/vs_section.txt
           printf "\n" >> /tmp/vs_section.txt
 
-          sed -i "/^## \[Unreleased\]/r /tmp/vs_section.txt" vscode/CHANGELOG.md
+          sed -i "/^## \[Unreleased\]/r /tmp/vs_section.txt" CHANGELOG.md
 
       - name: Create Release Pull Request
         id: release_pr
@@ -128,9 +128,6 @@ jobs:
     environment: production
     permissions:
       contents: read
-    defaults:
-      run:
-        working-directory: vscode
     steps:
       - name: Fetch Sources
         uses: actions/checkout@v6
@@ -142,7 +139,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: vscode/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Dependencies
         run: npm ci
@@ -164,7 +161,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vscode-extension-vsix
-          path: vscode/noemi-theme.vsix
+          path: noemi-theme.vsix
 
   create_release:
     name: Create GitHub Release
@@ -205,7 +202,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vscode-extension-vsix
-          path: artifacts/vscode/
+          path: artifacts/
 
       - name: Create GitHub Release
         env:
@@ -214,8 +211,8 @@ jobs:
           VERSION="${{ needs.prepare_release.outputs.version }}"
           TAG="$VERSION"
           ASSETS=()
-          if [ -d artifacts/vscode ] && [ -n "$(ls -A artifacts/vscode 2>/dev/null)" ]; then
-            ASSETS+=(artifacts/vscode/*)
+          if [ -d artifacts ] && [ -n "$(ls -A artifacts 2>/dev/null)" ]; then
+            ASSETS+=(artifacts/*)
           fi
           if [ "${#ASSETS[@]}" -gt 0 ]; then
             gh release create "$TAG" \

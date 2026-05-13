@@ -52,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: vscode-extension-vsix
-          path: vscode/noemi-theme.vsix
+          path: noemi-theme.vsix
