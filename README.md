@@ -103,7 +103,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Issue Tracker](https://github.com/stanleygomes/noemi/issues)
 - [Changelog](CHANGELOG.md)
-
----
-
-Made with 🔥 by Lumen HQ
