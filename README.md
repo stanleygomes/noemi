@@ -26,17 +26,22 @@ Select your preferred theme in VS Code's theme settings after installation.
 
 ## Installation 📥
 
-### From Visual Studio Marketplace
+### Quick Install
 
-1. Open VS Code
-2. Go to `Extensions` (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-3. Search for "Noemi Theme"
-4. Click `Install`
-5. Open `Preferences: Color Theme` and select one of:
-   - `Noemi Light`
-   - `Noemi Dark`
-   - `Noemi Red`
-   - `Noemi High Contrast`
+Install Noemi Theme with one click or copy the command for your editor of choice:
+
+| Editor / IDE           | Marketplace / Store Link                                                                                                                                                                                  | Terminal Command                                           |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------- |
+| **Visual Studio Code** | [![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-blue?style=flat-square&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=StanleyGomes.noemi-theme) | `code --install-extension StanleyGomes.noemi-theme`        |
+| **Cursor**             | [![Open VSX Registry](https://img.shields.io/badge/Open%20VSX-Registry-purple?style=flat-square)](https://open-vsx.org/extension/stanleygomes/noemi-theme)                                                | `cursor --install-extension StanleyGomes.noemi-theme`      |
+| **Antigravity**        | [![Open VSX Registry](https://img.shields.io/badge/Open%20VSX-Registry-purple?style=flat-square)](https://open-vsx.org/extension/stanleygomes/noemi-theme)                                                | `antigravity --install-extension StanleyGomes.noemi-theme` |
+
+After installing, open your editor's color theme preferences and select one of:
+
+- `Noemi Light`
+- `Noemi Dark`
+- `Noemi Red`
+- `Noemi High Contrast`
 
 ### Manual Installation (.vsix)
 
