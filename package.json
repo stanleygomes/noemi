@@ -27,6 +27,11 @@
         "path": "./themes/dark-theme.json"
       },
       {
+        "label": "Noemi Red",
+        "uiTheme": "vs-dark",
+        "path": "./themes/red-theme.json"
+      },
+      {
         "label": "Noemi High Contrast",
         "uiTheme": "hc-black",
         "path": "./themes/high-contrast-theme.json"

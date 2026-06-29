@@ -15,9 +15,10 @@ The ideal colors and contrast for long hours of coding. Your eyes will thank you
 
 ## Available Theme Variations
 
-Noemi Theme for VS Code comes in three variations, each designed for different preferences and accessibility needs:
+Noemi Theme for VS Code comes in four variations, each designed for different preferences and accessibility needs:
 
-- **Noemi Dark**: A comfortable dark theme for long coding sessions.
+- **Noemi Dark**: A comfortable dark theme with warm orange accents for long coding sessions.
+- **Noemi Red**: A warm dark theme with rich wine accents.
 - **Noemi Light**: A clean light theme for bright environments.
 - **Noemi High Contrast**: Enhanced contrast for improved accessibility and visibility.
 
@@ -34,6 +35,7 @@ Select your preferred theme in VS Code's theme settings after installation.
 5. Open `Preferences: Color Theme` and select one of:
    - `Noemi Light`
    - `Noemi Dark`
+   - `Noemi Red`
    - `Noemi High Contrast`
 
 ### Manual Installation (.vsix)
@@ -53,7 +55,7 @@ Select your preferred theme in VS Code's theme settings after installation.
 
 ### Theme Files
 
-- `vscode/themes/*.json`: VS Code light, dark and high-contrast themes
+- `themes/*.json`: VS Code light, dark, red and high-contrast themes
 
 ### Building the Extension
 
