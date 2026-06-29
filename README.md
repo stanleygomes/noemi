@@ -73,12 +73,9 @@ This project uses GitHub Actions for continuous integration and deployment. The 
 
 - **Trigger**: Push to `master` branch or pull requests
 - **Actions**:
-  - Validates Gradle Wrapper
-  - Runs unit tests and plugin verification
-  - Executes Qodana code inspections
-  - Builds the plugin
-  - Runs plugin verifier
-  - Creates a draft release for manual review
+  - Validates commit messages (Conventional Commits)
+  - Installs dependencies and packages the extension as a `.vsix` file
+  - Uploads the built extension as a workflow artifact on pushes to `master`
 
 ### Release Workflow (`release.yml`)
 
