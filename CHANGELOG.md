@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-05-14
+
+- feat: update site assets and configure dynamic favicon import in layout
+- chore: update GitHub Actions and upgrade Node.js to v24 across workflows
+- Merge pull request #23 from stanleygomes/release/v1.3.2
+
+
 ## [1.3.2] - 2026-05-13
 
 - refactor: flatten repository structure by moving CI workflows and artifact paths to project root
