@@ -13,7 +13,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - docs: update CI workflow description in README to reflect migration to conventional commits and VS Code extension packaging
 - feat: add Noemi Red theme definition to package.json and theme file
 - chore: remove agents.md
-- Please provide the code changes or file diffs you would like me to summarize.
+
+## [1.4.0] - 2026-05-14
+
+- feat: update site assets and configure dynamic favicon import in layout
+- chore: update GitHub Actions and upgrade Node.js to v24 across workflows
+- Merge pull request #23 from stanleygomes/release/v1.3.2
 
 
 ## [1.3.2] - 2026-05-13
