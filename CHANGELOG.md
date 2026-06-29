@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-06-29
+
+- chore: remove unused landpage directory and all associated source files
+- docs: update installation instructions with quick-install table for supported editors
+- docs: update CI workflow description in README to reflect migration to conventional commits and VS Code extension packaging
+- feat: add Noemi Red theme definition to package.json and theme file
+- chore: remove agents.md
+- Please provide the code changes or file diffs you would like me to summarize.
+
+
 ## [1.3.2] - 2026-05-13
 
 - refactor: flatten repository structure by moving CI workflows and artifact paths to project root
