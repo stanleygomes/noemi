@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-06-29
+
+- chore: remove unused landpage directory and all associated source files
+- docs: update installation instructions with quick-install table for supported editors
+- docs: update CI workflow description in README to reflect migration to conventional commits and VS Code extension packaging
+- feat: add Noemi Red theme definition to package.json and theme file
+- chore: remove agents.md
+
 ## [1.4.0] - 2026-05-14
 
 - feat: update site assets and configure dynamic favicon import in layout
