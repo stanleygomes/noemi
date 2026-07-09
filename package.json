@@ -32,6 +32,11 @@
         "path": "./themes/red-theme.json"
       },
       {
+        "label": "Noemi Blue",
+        "uiTheme": "vs-dark",
+        "path": "./themes/blue-theme.json"
+      },
+      {
         "label": "Noemi High Contrast",
         "uiTheme": "hc-black",
         "path": "./themes/high-contrast-theme.json"
