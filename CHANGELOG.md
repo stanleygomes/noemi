@@ -12,6 +12,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - fix: update title bar colors for consistency across themes
 - chore: simplify footer text in README.md
 
+## [1.6.0] - 2026-07-09
+
+- feat: add Noemi Blue theme configuration and definition file
+- Merge pull request #25 from stanleygomes/release/v1.5.0
+- Merge branch 'master' into release/v1.5.0
+- Merge pull request #24 from stanleygomes/release/v1.4.0
+- chore(release): v1.4.0
 
 ## [1.5.0] - 2026-06-29
 
