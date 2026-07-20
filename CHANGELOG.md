@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-07-20
+
+- feat: add Noemi Blue theme and remove high contrast theme
+- fix: update title bar colors for consistency across themes
+- chore: simplify footer text in README.md
+
+
 ## [1.5.0] - 2026-06-29
 
 - chore: remove unused landpage directory and all associated source files
