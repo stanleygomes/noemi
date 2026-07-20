@@ -87,9 +87,9 @@
     "minimapGutter.modifiedBackground": "#5cacde",
     "minimapGutter.deletedBackground": "#f14444",
     // ── Title Bar ───────────────────────────────────────────
-    "titleBar.activeBackground": "#1f1f1f",
+    "titleBar.activeBackground": "#121212",
     "titleBar.activeForeground": "#c3c1ba",
-    "titleBar.inactiveBackground": "#1f1f1f",
+    "titleBar.inactiveBackground": "#121212",
     "titleBar.inactiveForeground": "#85837d",
     "titleBar.border": "#121212",
     // ── Activity Bar ────────────────────────────────────────

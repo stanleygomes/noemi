@@ -95,9 +95,9 @@
     "minimapGutter.deletedBackground": "#f14444",
 
     // ── Title Bar ───────────────────────────────────────────
-    "titleBar.activeBackground": "#1f1f1f",
+    "titleBar.activeBackground": "#010101",
     "titleBar.activeForeground": "#c3c1ba",
-    "titleBar.inactiveBackground": "#1f1f1f",
+    "titleBar.inactiveBackground": "#010101",
     "titleBar.inactiveForeground": "#85837d",
     "titleBar.border": "#010101",
 
